@@ -1,5 +1,3 @@
-`use strict`;
-
 const TASK_COUNT = 3;
 
 const siteMainElement = document.querySelector(`.main`);
