@@ -2,12 +2,11 @@ import {MONTH_NAMES} from "../consts";
 import {formatTime} from "../utils";
 
 const createTaskTemplate = (task) => {
-  const {color, description, isArchive, isFavorite, dueDate, repeatingDays} = task;
+  const {color, description, isArchive, isFavorite, dueDate, isExpired, isRepeat} = task;
 
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
   const isDateShowing = !!dueDate;
 
-  const repeatClass = Object.values(repeatingDays).some(Boolean) ? `card--repeat` : ``;
+  const repeatClass = isRepeat ? `card--repeat` : ``;
   const deadlineClass = isExpired ? `card--deadline` : ``;
   const archiveButtonInactiveClass = isArchive ? `` : `card__btn--disabled`;
   const favoriteButtonInactiveClass = isFavorite ? `` : `card__btn--disabled`;

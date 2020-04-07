@@ -6,13 +6,10 @@ import {createTaskTemplate} from "./components/task";
 import {createLoadMoreButtonTemplate} from "./components/load-more";
 import {createSortingTemplate} from "./components/sorting";
 import {filters} from "./mock/filter";
-import {generateTasks} from "./mock/task";
+import {tasks} from "./mock/task";
 
-const TASK_COUNT = 20;
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
-
-const tasks = generateTasks(TASK_COUNT);
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);

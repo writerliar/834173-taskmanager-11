@@ -1,5 +1,7 @@
 import {COLORS} from "../consts";
 
+const TASK_COUNT = 20;
+
 const DescriptionItems = [`Изучить теорию`, `Сделать домашку`, `Пройти интенсив на соточку`];
 
 const DefaultRepeatingDays = {
@@ -38,6 +40,8 @@ const generateRepeatingDays = () => {
 
 const generateTask = () => {
   const dueDate = Math.random() > 0.5 ? null : getRandomDate();
+  const repeatingDays = dueDate ? DefaultRepeatingDays : generateRepeatingDays();
+  const isRepeat = Object.values(repeatingDays).some(Boolean);
 
   return {
     color: getRandomValue(COLORS),
@@ -45,7 +49,9 @@ const generateTask = () => {
     isArchive: Math.random() > 0.5,
     isFavorite: Math.random() > 0.5,
     dueDate,
-    repeatingDays: dueDate ? DefaultRepeatingDays : generateRepeatingDays(),
+    repeatingDays,
+    isExpired: dueDate instanceof Date && dueDate < Date.now(),
+    isRepeat,
   };
 };
 
@@ -55,4 +61,6 @@ const generateTasks = (count) => {
     .map(generateTask);
 };
 
-export {generateTask, generateTasks};
+const tasks = generateTasks(TASK_COUNT);
+
+export {generateTask, tasks};

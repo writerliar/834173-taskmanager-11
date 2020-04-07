@@ -43,14 +43,13 @@ const createColorsMarkup = (colors, currentColor) => {
 };
 
 const createTaskEditTemplate = (task) => {
-  const {color, description, dueDate, repeatingDays} = task;
+  const {color, description, dueDate, repeatingDays, isExpired, isRepeat} = task;
 
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
   const isDateShowing = !!dueDate;
 
-  const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
+  // const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
 
-  const repeatClass = isRepeatingTask ? `card--repeat` : ``;
+  const repeatClass = isRepeat ? `card--repeat` : ``;
   const deadlineClass = isExpired ? `card--deadline` : ``;
 
   const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
@@ -102,10 +101,10 @@ const createTaskEditTemplate = (task) => {
       : ``}
 
                       <button class="card__repeat-toggle" type="button">
-                        repeat:<span class="card__repeat-status">${isRepeatingTask ? `yes` : `no`}</span>
+                        repeat:<span class="card__repeat-status">${isRepeat ? `yes` : `no`}</span>
                       </button>
 
-                      ${isRepeatingTask ?
+                      ${isRepeat ?
       `<fieldset class="card__repeat-days">
                         <div class="card__repeat-days-inner">
                           ${repeatingDaysMarkup}
