@@ -6,8 +6,11 @@ import {createTaskTemplate} from "./components/task";
 import {createLoadMoreButtonTemplate} from "./components/load-more";
 import {createSortingTemplate} from "./components/sorting";
 import {filters} from "./mock/filter";
+import {generateTasks} from "./mock/task";
 
 const TASK_COUNT = 3;
+
+const tasks = generateTasks(TASK_COUNT);
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
@@ -23,11 +26,11 @@ render(siteMainElement, createBoardTemplate(), `beforeend`);
 const boardElement = siteMainElement.querySelector(`.board`);
 const taskListElement = siteMainElement.querySelector(`.board__tasks`);
 
-render(taskListElement, createTaskEditTemplate(), `beforeend`);
+render(taskListElement, createTaskEditTemplate(tasks[0]), `beforeend`);
 render(boardElement, createSortingTemplate(), `afterbegin`);
 
-for (let i = 0; i <= TASK_COUNT; i++) {
-  render(taskListElement, createTaskTemplate(), `beforeend`);
+for (let i = 1; i < tasks.length; i++) {
+  render(taskListElement, createTaskTemplate(tasks[i]), `beforeend`);
 }
 
 render(boardElement, createLoadMoreButtonTemplate(), `beforeend`);
