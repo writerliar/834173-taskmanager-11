@@ -2,9 +2,10 @@ import {createSiteMenuTemplate} from "./components/site-menu";
 import {createFilterTemplate} from "./components/filter";
 import {createBoardTemplate} from "./components/board";
 import {createTaskEditTemplate} from "./components/task-edit";
-import {createCardTemplate} from "./components/card";
+import {createTaskTemplate} from "./components/task";
 import {createLoadMoreButtonTemplate} from "./components/load-more";
 import {createSortingTemplate} from "./components/sorting";
+import {filters} from "./mock/filter";
 
 const TASK_COUNT = 3;
 
@@ -16,7 +17,7 @@ const render = (container, template, place) => {
 };
 
 render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
-render(siteMainElement, createFilterTemplate(), `beforeend`);
+render(siteMainElement, createFilterTemplate(filters), `beforeend`);
 render(siteMainElement, createBoardTemplate(), `beforeend`);
 
 const boardElement = siteMainElement.querySelector(`.board`);
@@ -26,7 +27,7 @@ render(taskListElement, createTaskEditTemplate(), `beforeend`);
 render(boardElement, createSortingTemplate(), `afterbegin`);
 
 for (let i = 0; i <= TASK_COUNT; i++) {
-  render(taskListElement, createCardTemplate(), `beforeend`);
+  render(taskListElement, createTaskTemplate(), `beforeend`);
 }
 
 render(boardElement, createLoadMoreButtonTemplate(), `beforeend`);
