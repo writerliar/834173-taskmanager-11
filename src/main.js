@@ -6,9 +6,11 @@ import TaskComponent from "./components/task";
 import LoadMoreButtonComponent from "./components/load-more";
 import SortingComponent from "./components/sorting";
 import TasksComponent from "./components/tasks";
+import NoTasksComponent from "./components/no-tasks";
 import {filters} from "./mock/filter";
 import {tasks} from "./mock/task";
 import {render, RenderPosition} from "./utils";
+import {NO_TASK} from "./consts";
 
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
@@ -50,6 +52,13 @@ const renderTask = (taskListElement, task) => {
 };
 
 const renderBoard = (boardComponent, tasksCards) => {
+  const isAllTasksIsArchived = tasksCards.every((task) => task.isArchive);
+
+  if (isAllTasksIsArchived || tasksCards.length === NO_TASK) {
+    render(boardComponent.getElement(), new NoTasksComponent().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+
   render(boardComponent.getElement(), new SortingComponent().getElement(), RenderPosition.BEFOREEND);
   render(boardComponent.getElement(), new TasksComponent().getElement(), RenderPosition.BEFOREEND);
 
