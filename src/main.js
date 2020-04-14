@@ -1,22 +1,20 @@
-import {createSiteMenuTemplate} from "./components/site-menu";
-import {createFilterTemplate} from "./components/filter";
-import {createBoardTemplate} from "./components/board";
-import {createTaskEditTemplate} from "./components/task-edit";
-import {createTaskTemplate} from "./components/task";
-import {createLoadMoreButtonTemplate} from "./components/load-more";
-import {createSortingTemplate} from "./components/sorting";
+import SiteMenuComponent from "./components/site-menu";
+import FilterComponent from "./components/filter";
+import BoardComponent from "./components/board";
+import TaskEditComponent from "./components/task-edit";
+import TaskComponent from "./components/task";
+import LoadMoreButtonComponent from "./components/load-more";
+import SortingComponent from "./components/sorting";
+import TasksComponent from "./components/tasks";
 import {filters} from "./mock/filter";
 import {tasks} from "./mock/task";
+import {render, RenderPosition} from "./utils";
 
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
-
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
 render(siteMainElement, createFilterTemplate(filters), `beforeend`);
