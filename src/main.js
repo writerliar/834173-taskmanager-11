@@ -1,5 +1,5 @@
 import SiteMenuComponent from "./components/site-menu";
-import FilterComponent from "./components/filter";
+import FiltersComponent from "./components/filters";
 import BoardComponent from "./components/board";
 import TaskEditComponent from "./components/task-edit";
 import TaskComponent from "./components/task";
@@ -14,6 +14,12 @@ import {NO_TASK} from "./consts";
 
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
+
+const siteMainElement = document.querySelector(`.main`);
+const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
+
+render(siteHeaderElement, new SiteMenuComponent().getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new FiltersComponent(filters).getElement(), RenderPosition.BEFOREEND);
 
 const renderTask = (taskListElement, task) => {
   const replaceTaskToEdit = () => {
@@ -85,12 +91,6 @@ const renderBoard = (boardComponent, tasksCards) => {
     }
   });
 };
-
-const siteMainElement = document.querySelector(`.main`);
-const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
-
-render(siteHeaderElement, new SiteMenuComponent().getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
 
 const boardComponent = new BoardComponent();
 render(siteMainElement, boardComponent.getElement(), RenderPosition.BEFOREEND);
