@@ -17,4 +17,10 @@ export const MONTH_NAMES = [
   `December`,
 ];
 
+export const SortType = {
+  DATE_DOWN: `date-down`,
+  DATE_UP: `date-up`,
+  DEFAULT: `default`,
+};
+
 export const NO_TASK = 0;
