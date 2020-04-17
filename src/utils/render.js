@@ -21,3 +21,11 @@ export const render = (container, element, place) => {
       break;
   }
 };
+
+export const replace = (parent, newElement, oldElement) => {
+  parent.replaceChild(newElement, oldElement);
+};
+
+export const remove = (element) => {
+  element.remove();
+};

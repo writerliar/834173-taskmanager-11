@@ -9,7 +9,7 @@ import TasksComponent from "./components/tasks";
 import NoTasksComponent from "./components/no-tasks";
 import {filters} from "./mock/filter";
 import {tasks} from "./mock/task";
-import {render, RenderPosition} from "./utils/render";
+import {render, RenderPosition, replace, remove} from "./utils/render";
 import {NO_TASK} from "./consts";
 
 const SHOWING_TASKS_COUNT_ON_START = 8;
@@ -23,11 +23,11 @@ render(siteMainElement, new FiltersComponent(filters).getElement(), RenderPositi
 
 const renderTask = (taskListElement, task) => {
   const replaceTaskToEdit = () => {
-    taskListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+    replace(taskListElement, taskEditComponent.getElement(), taskComponent.getElement());
   };
 
   const replaceEditToTask = () => {
-    taskListElement.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
+    replace(taskListElement, taskComponent.getElement(), taskEditComponent.getElement());
   };
 
   const onEscKeyDown = (evt) => {
@@ -86,7 +86,7 @@ const renderBoard = (boardComponent, tasksCards) => {
       .forEach((task) => renderTask(taskListElement, task));
 
     if (showingTaskCount >= tasksCards.length) {
-      loadMoreButtonComponent.getElement().remove();
+      remove(loadMoreButtonComponent.getElement());
       loadMoreButtonComponent.removeElement();
     }
   });

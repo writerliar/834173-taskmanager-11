@@ -1,5 +1,5 @@
 import {MONTH_NAMES} from "../consts";
-import {formatTime} from "../utils/utils";
+import {formatTime} from "../utils/common";
 import AbstractComponent from "./abstract-component";
 
 const createTaskTemplate = (task) => {
