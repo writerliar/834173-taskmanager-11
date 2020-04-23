@@ -3,8 +3,9 @@ import TaskEditComponent from "../components/task-edit";
 import {render, RenderPosition, replace} from "../utils/render";
 
 export default class TaskController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
 
     this._taskComponent = null;
     this._taskEditComponent = null;
@@ -24,6 +25,18 @@ export default class TaskController {
       evt.preventDefault();
       this._replaceEditToTask();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
+    });
+
+    this._taskComponent.setArchiveButtonClick(() => {
+      this._onDataChange(task, Object.assign({}, task, {
+        isArchive: !task.isArchive,
+      }));
+    });
+
+    this._taskComponent.setFavoriteButtonClick(() => {
+      this._onDataChange(task, Object.assign({}, task, {
+        isFavorite: !task.isFavorite,
+      }));
     });
 
     render(this._container, this._taskComponent, RenderPosition.BEFOREEND);
