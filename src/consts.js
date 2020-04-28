@@ -24,3 +24,12 @@ export const SortType = {
 };
 
 export const NO_TASK = 0;
+
+export const FilterType = {
+  ALL: `all`,
+  OVERDUE: `overdue`,
+  TODAY: `today`,
+  FAVORITES: `favorites`,
+  REPEATING: `repeating`,
+  ARCHIVE: `archive`,
+};
