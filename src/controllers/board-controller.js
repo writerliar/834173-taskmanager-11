@@ -83,7 +83,7 @@ export default class BoardController {
   _renderLoadMoreButton() {
     const container = this._container.getElement();
 
-    if (this._showingTaskCount >= this._tasks.leading) {
+    if (this._showingTaskCount >= this._tasks.length) {
       return;
     }
 
