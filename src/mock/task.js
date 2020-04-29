@@ -44,13 +44,13 @@ const generateTask = () => {
   const isRepeat = Object.values(repeatingDays).some(Boolean);
 
   return {
+    id: String(Date() + Math.random()),
     color: getRandomValue(COLORS),
     description: getRandomValue(DescriptionItems),
     isArchive: Math.random() > 0.5,
     isFavorite: Math.random() > 0.5,
     dueDate,
     repeatingDays,
-    isExpired: dueDate instanceof Date && dueDate < Date.now(),
     isRepeat,
   };
 };

@@ -1,10 +1,29 @@
 import TaskComponent from "../components/task";
 import TaskEditComponent from "../components/task-edit";
-import {render, RenderPosition, replace} from "../utils/render";
+import {render, RenderPosition, replace, remove} from "../utils/render";
+import {Color} from "../consts";
 
-const Mode = {
+export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
+  ADDING: `adding`,
+};
+
+export const EmptyTask = {
+  color: Color.BLACK,
+  description: ``,
+  isArchive: false,
+  isFavorite: false,
+  dueDate: null,
+  repeatingDays: {
+    "mo": false,
+    "tu": false,
+    "we": false,
+    "th": false,
+    "fr": false,
+    "sa": false,
+    "su": false,
+  },
 };
 
 export default class TaskController {
@@ -20,9 +39,10 @@ export default class TaskController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(task) {
+  render(task, mode) {
     const oldTaskComponent = this._taskComponent;
     const oldTaskEditComponent = this._taskEditComponent;
+    this._mode = mode;
 
     this._taskComponent = new TaskComponent(task);
     this._taskEditComponent = new TaskEditComponent(task);
@@ -33,27 +53,43 @@ export default class TaskController {
 
     this._taskEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      this._replaceEditToTask();
+      const data = this._taskEditComponent.getData();
+      this._onDataChange(this, task, data);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
+    this._taskEditComponent.setDeleteButtonCLickHandler(() => this._onDataChange(this, task, null));
+
     this._taskComponent.setArchiveButtonClick(() => {
-      this._onDataChange(task, Object.assign({}, task, {
+      this._onDataChange(this, task, Object.assign({}, task, {
         isArchive: !task.isArchive,
       }));
     });
 
     this._taskComponent.setFavoriteButtonClick(() => {
-      this._onDataChange(task, Object.assign({}, task, {
+      this._onDataChange(this, task, Object.assign({}, task, {
         isFavorite: !task.isFavorite,
       }));
     });
 
-    if (oldTaskComponent && oldTaskEditComponent) {
-      replace(this._taskComponent, oldTaskComponent);
-      replace(this._taskEditComponent, oldTaskEditComponent);
-    } else {
-      render(this._container, this._taskComponent, RenderPosition.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldTaskComponent && oldTaskEditComponent) {
+          replace(this._taskComponent, oldTaskComponent);
+          replace(this._taskEditComponent, oldTaskEditComponent);
+          this._replaceEditToTask();
+        } else {
+          render(this._container, this._taskComponent, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.ADDING:
+        if (oldTaskComponent && oldTaskEditComponent) {
+          remove(oldTaskEditComponent);
+          remove(oldTaskComponent);
+        }
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        render(this._container, this._taskEditComponent, RenderPosition.AFTERBEGIN);
+        break;
     }
   }
 
@@ -61,6 +97,12 @@ export default class TaskController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToTask();
     }
+  }
+
+  destroy() {
+    remove(this._taskEditComponent);
+    remove(this._taskComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceTaskToEdit() {
@@ -72,7 +114,10 @@ export default class TaskController {
 
   _replaceEditToTask() {
     this._taskEditComponent.reset();
-    replace(this._taskComponent, this._taskEditComponent);
+    if (document.contains(this._taskEditComponent.getElement())) {
+      replace(this._taskComponent, this._taskEditComponent);
+    }
+
     this._mode = Mode.DEFAULT;
   }
 
@@ -80,6 +125,9 @@ export default class TaskController {
     const isEscapeKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscapeKey) {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyTask, null);
+      }
       this._replaceEditToTask();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
