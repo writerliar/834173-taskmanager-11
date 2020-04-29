@@ -51,7 +51,6 @@ const generateTask = () => {
     isFavorite: Math.random() > 0.5,
     dueDate,
     repeatingDays,
-    isExpired: dueDate instanceof Date && dueDate < Date.now(),
     isRepeat,
   };
 };
