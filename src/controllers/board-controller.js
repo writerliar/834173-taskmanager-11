@@ -142,24 +142,24 @@ export default class BoardController {
     }
   }
 
-  _onDataChange(oldData, newData) {
-    const index = this._tasksModel.getTasks().findIndex((it) => it === oldData);
+  _onDataChange(taskController, oldData, newData) {
+    // const index = this._tasksModel.getTasks().findIndex((it) => it.id === oldData.id);
 
     if (oldData === EmptyTask) {
       this._creatingTask = null;
       if (newData === null) {
-        this._showedTaskControllers[index].destroy();
+        taskController.destroy();
         this._updateTasks(this._showingTaskCount);
       } else {
         this._tasksModel.addTask(newData);
-        this._showedTaskControllers[index].render(newData, TaskControllerMode.DEFAULT);
+        taskController.render(newData, TaskControllerMode.DEFAULT);
 
         if (this._showingTaskCount % SHOWING_TASKS_COUNT_BY_BUTTON === 0) {
           const destroyedTask = this._showedTaskControllers.pop();
           destroyedTask.destroy();
         }
 
-        this._showedTaskControllers = [].concat(this._showedTaskControllers[index], this._showedTaskControllers);
+        this._showedTaskControllers = [].concat(taskController, this._showedTaskControllers);
         this._showingTaskCount = this._showedTaskControllers.length;
 
         this._renderLoadMoreButton();
@@ -171,7 +171,7 @@ export default class BoardController {
       const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
 
       if (isSuccess) {
-        this._showedTaskControllers[index].render(newData, TaskControllerMode.DEFAULT);
+        taskController.render(newData, TaskControllerMode.DEFAULT);
       }
     }
   }

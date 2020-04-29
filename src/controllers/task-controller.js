@@ -54,20 +54,20 @@ export default class TaskController {
     this._taskEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       const data = this._taskEditComponent.getData();
-      this._onDataChange(task, data);
+      this._onDataChange(this, task, data);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._taskEditComponent.setDeleteButtonCLickHandler(() => this._onDataChange(task, null));
+    this._taskEditComponent.setDeleteButtonCLickHandler(() => this._onDataChange(this, task, null));
 
     this._taskComponent.setArchiveButtonClick(() => {
-      this._onDataChange(task, Object.assign({}, task, {
+      this._onDataChange(this, task, Object.assign({}, task, {
         isArchive: !task.isArchive,
       }));
     });
 
     this._taskComponent.setFavoriteButtonClick(() => {
-      this._onDataChange(task, Object.assign({}, task, {
+      this._onDataChange(this, task, Object.assign({}, task, {
         isFavorite: !task.isFavorite,
       }));
     });
@@ -126,7 +126,7 @@ export default class TaskController {
 
     if (isEscapeKey) {
       if (this._mode === Mode.ADDING) {
-        this._onDataChange(EmptyTask, null);
+        this._onDataChange(this, EmptyTask, null);
       }
       this._replaceEditToTask();
       document.removeEventListener(`keydown`, this._onEscKeyDown);

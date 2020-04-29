@@ -44,7 +44,7 @@ const generateTask = () => {
   const isRepeat = Object.values(repeatingDays).some(Boolean);
 
   return {
-    id: String(Date.now() + Math.random()),
+    id: String(Date() + Math.random()),
     color: getRandomValue(COLORS),
     description: getRandomValue(DescriptionItems),
     isArchive: Math.random() > 0.5,
