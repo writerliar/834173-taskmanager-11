@@ -30,7 +30,7 @@ const getTasksInOneDay = (tasks, date) => {
 };
 
 const getRepeatingTasks = (tasks) => {
-  return tasks.filter((task) => isRepeating(task.isRepeat));
+  return tasks.filter((task) => isRepeating(task.repeatingDays));
 };
 
 export const getTasksByFilter = (tasks, filterType) => {

@@ -83,6 +83,17 @@ export default class BoardController {
     this._renderLoadMoreButton();
   }
 
+  createTask() {
+    if (this._creatingTask) {
+      return;
+    }
+
+    const taskListElement = this._tasksComponent.getElement();
+
+    this._creatingTask = new TaskController(taskListElement, this._onDataChange, this._onViewChange);
+    this._creatingTask.render(EmptyTask, TaskControllerMode.ADDING);
+  }
+
   _renderTasks(tasks) {
     const taskListElement = this._tasksComponent.getElement();
 
