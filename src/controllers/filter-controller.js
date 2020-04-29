@@ -22,7 +22,7 @@ export default class FilterController {
     const allTasks = this._tasksModel.getTasksAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
-        name: filterType,
+        title: filterType,
         count: getTasksByFilter(allTasks, filterType).length,
         checked: filterType === this._activeFilterType,
       };
