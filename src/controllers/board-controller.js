@@ -2,7 +2,7 @@ import NoTasksComponent from "../components/no-tasks";
 import SortingComponent from "../components/sorting";
 import TasksComponent from "../components/tasks";
 import LoadMoreButtonComponent from "../components/load-more";
-import TaskController from "./task-controller";
+import TaskController, {Mode as TaskControllerMode, EmptyTask} from "./task-controller";
 import {NO_TASK, SortType} from "../consts";
 import {remove, render, RenderPosition} from "../utils/render";
 
@@ -13,7 +13,7 @@ const renderTasks = (taskListElement, tasks, onDataChange, onViewChange) => {
   return tasks.map((task) => {
     const taskController = new TaskController(taskListElement, onDataChange, onViewChange);
 
-    taskController.render(task);
+    taskController.render(task, TaskControllerMode.DEFAULT);
 
     return taskController;
   });
@@ -45,6 +45,8 @@ export default class BoardController {
     this._tasksModel = tasksModel;
     this._showedTaskControllers = [];
     this._showingTaskCount = SHOWING_TASKS_COUNT_ON_START;
+
+    this._creatingTask = null;
 
     this._noTasksComponent = new NoTasksComponent();
     this._sortingComponent = new SortingComponent();
@@ -131,10 +133,35 @@ export default class BoardController {
 
   _onDataChange(oldData, newData) {
     const index = this._tasksModel.getTasks().findIndex((it) => it === oldData);
-    const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
 
-    if (isSuccess) {
-      this._showedTaskControllers[index].render(newData);
+    if (oldData === EmptyTask) {
+      this._creatingTask = null;
+      if (newData === null) {
+        this._showedTaskControllers[index].destroy();
+        this._updateTasks(this._showingTaskCount);
+      } else {
+        this._tasksModel.addTask(newData);
+        this._showedTaskControllers[index].render(newData, TaskControllerMode.DEFAULT);
+
+        if (this._showingTaskCount % SHOWING_TASKS_COUNT_BY_BUTTON === 0) {
+          const destroyedTask = this._showedTaskControllers.pop();
+          destroyedTask.destroy();
+        }
+
+        this._showedTaskControllers = [].concat(this._showedTaskControllers[index], this._showedTaskControllers);
+        this._showingTaskCount = this._showedTaskControllers.length;
+
+        this._renderLoadMoreButton();
+      }
+    } else if (newData === null) {
+      this._tasksModel.removeTask(oldData.id);
+      this._updateTasks(this._showingTaskCount);
+    } else {
+      const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
+
+      if (isSuccess) {
+        this._showedTaskControllers[index].render(newData, TaskControllerMode.DEFAULT);
+      }
     }
   }
 
