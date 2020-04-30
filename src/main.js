@@ -1,6 +1,7 @@
 import SiteMenuComponent, {MenuItem} from "./components/site-menu";
 import FiltersController from "./controllers/filter-controller";
 import BoardComponent from "./components/board";
+import StatisticsComponent from "./components/statistics";
 import BoardController from "./controllers/board-controller";
 import TasksModel from "./models/tasks";
 import {tasks} from "./mock/task";
@@ -32,3 +33,7 @@ siteMenuComponent.setOnChange((menuItem) => {
       break;
   }
 });
+
+const statisticsComponent = new StatisticsComponent();
+
+render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
