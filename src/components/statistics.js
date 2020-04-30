@@ -207,7 +207,7 @@ const createStatisticsTemplate = ({tasks, dateFrom, dateTo}) => {
               <span class="statistic__task-found">${tasksCount}</span> tasks were fulfilled.
             </p>
           </div>
-          <div class="statistic__line-graphic visually-hidden">
+          <div class="statistic__line-graphic">
             <canvas class="statistic__days" width="550" height="150"></canvas>
           </div>
         </div>

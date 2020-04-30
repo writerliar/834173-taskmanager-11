@@ -96,10 +96,15 @@ export default class BoardController {
 
   show() {
     this._container.show();
+    const sortedTasks = getSortedTasks(this._tasksModel.getTasks(), this._sortingComponent.getSortType(), 0, this._showingTaskCount);
+
+    this._removeTasks();
+    this._renderTasks(sortedTasks);
   }
 
   hide() {
     this._container.hide();
+    this._sortingComponent.resetSorting();
   }
 
   _renderTasks(tasks) {

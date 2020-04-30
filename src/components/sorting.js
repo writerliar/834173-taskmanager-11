@@ -45,4 +45,8 @@ export default class Sorting extends AbstractComponent {
       handler(this._currentSortType);
     });
   }
+
+  resetSorting() {
+    this._currentSortType = SortType.DEFAULT;
+  }
 }
