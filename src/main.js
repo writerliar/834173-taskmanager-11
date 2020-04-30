@@ -25,15 +25,27 @@ render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
 const boardController = new BoardController(boardComponent, tasksModel);
 boardController.render(tasks);
 
+const statisticsComponent = new StatisticsComponent();
+render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
+statisticsComponent.hide();
+
 siteMenuComponent.setOnChange((menuItem) => {
   switch (menuItem) {
     case MenuItem.NEW_TASK:
       siteMenuComponent.setActiveItem(MenuItem.TASKS);
+      boardController.show();
+      statisticsComponent.hide();
       boardController.createTask();
+      break;
+    case MenuItem.STATISTICS:
+      siteMenuComponent.setActiveItem(MenuItem.STATISTICS);
+      boardController.hide();
+      statisticsComponent.show();
+      break;
+    case MenuItem.TASKS:
+      siteMenuComponent.setActiveItem(MenuItem.TASKS);
+      boardController.show();
+      statisticsComponent.hide();
       break;
   }
 });
-
-const statisticsComponent = new StatisticsComponent();
-
-render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
