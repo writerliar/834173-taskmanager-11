@@ -1,7 +1,8 @@
 import TaskComponent from "../components/task";
 import TaskEditComponent from "../components/task-edit";
+import TaskModel from "../models/task";
 import {render, RenderPosition, replace, remove} from "../utils/render";
-import {Color} from "../consts";
+import {Color, DAYS} from "../consts";
 
 export const Mode = {
   DEFAULT: `default`,
@@ -24,6 +25,27 @@ export const EmptyTask = {
     "sa": false,
     "su": false,
   },
+};
+
+const parseFormData = (formData) => {
+  const date = formData.get(`date`);
+
+  const repeatingDays = DAYS.reduce((acc, day) => {
+    acc[day] = false;
+    return acc;
+  }, {});
+
+  return new TaskModel({
+    "description": formData.get(`text`),
+    "color": formData.get(`color`),
+    "due_date": date ? new Date(date) : null,
+    "repeating_days": formData.getAll(`repeat`).reduce((acc, it) => {
+      acc[it] = true;
+      return acc;
+    }, repeatingDays),
+    "is_favorite": false,
+    "is_done": false,
+  });
 };
 
 export default class TaskController {
@@ -53,7 +75,10 @@ export default class TaskController {
 
     this._taskEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const data = this._taskEditComponent.getData();
+
+      const formData = this._taskEditComponent.getData();
+      const data = parseFormData(formData);
+
       this._onDataChange(this, task, data);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
@@ -61,15 +86,17 @@ export default class TaskController {
     this._taskEditComponent.setDeleteButtonCLickHandler(() => this._onDataChange(this, task, null));
 
     this._taskComponent.setArchiveButtonClick(() => {
-      this._onDataChange(this, task, Object.assign({}, task, {
-        isArchive: !task.isArchive,
-      }));
+      const newTask = TaskModel.clone(task);
+      newTask.isArchive = !newTask.isArchive;
+
+      this._onDataChange(this, task, newTask);
     });
 
     this._taskComponent.setFavoriteButtonClick(() => {
-      this._onDataChange(this, task, Object.assign({}, task, {
-        isFavorite: !task.isFavorite,
-      }));
+      const newTask = TaskModel.clone(task);
+      newTask.isFavorite = !newTask.isFavorite;
+
+      this._onDataChange(this, task, newTask);
     });
 
     switch (mode) {

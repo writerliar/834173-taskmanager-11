@@ -39,8 +39,9 @@ const getSortedTasks = (tasks, sortType, from, to) => {
 };
 
 export default class BoardController {
-  constructor(container, tasksModel) {
+  constructor(container, tasksModel, api) {
     this._container = container;
+    this._api = api;
 
     this._tasksModel = tasksModel;
     this._showedTaskControllers = [];
@@ -71,7 +72,7 @@ export default class BoardController {
     const isAllTasksIsArchived = tasks.every((task) => task.isArchive);
 
     if (isAllTasksIsArchived || tasks.length === NO_TASK) {
-      render(container, this._noTasksComponent(), RenderPosition.BEFOREEND);
+      render(container, this._noTasksComponent, RenderPosition.BEFOREEND);
       return;
     }
 
@@ -156,8 +157,6 @@ export default class BoardController {
   }
 
   _onDataChange(taskController, oldData, newData) {
-    // const index = this._tasksModel.getTasks().findIndex((it) => it.id === oldData.id);
-
     if (oldData === EmptyTask) {
       this._creatingTask = null;
       if (newData === null) {
@@ -181,11 +180,15 @@ export default class BoardController {
       this._tasksModel.removeTask(oldData.id);
       this._updateTasks(this._showingTaskCount);
     } else {
-      const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
+      this._api.updateTask(oldData.id, newData)
+        .then((taskModel) => {
+          const isSuccess = this._tasksModel.updateTask(oldData.id, taskModel);
 
-      if (isSuccess) {
-        taskController.render(newData, TaskControllerMode.DEFAULT);
-      }
+          if (isSuccess) {
+            taskController.render(taskModel, TaskControllerMode.DEFAULT);
+            this._updateTasks(this._showingTaskCount);
+          }
+        });
     }
   }
 
