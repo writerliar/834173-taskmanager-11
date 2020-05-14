@@ -41,13 +41,20 @@ const API = class {
 
   createTask(task) {
     return this._load({
-      url: `/tasks/`,
+      url: `/tasks`,
       method: Method.POST,
       body: JSON.stringify(task.toRaw()),
       headers: new Headers({"Content-Type": `application/json`}),
     })
       .then((response) => response.json())
       .then(Task.parseTask);
+  }
+
+  deleteTask(id) {
+    return this._load({
+      url: `/tasks/${id}`,
+      method: Method.DELETE,
+    });
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
