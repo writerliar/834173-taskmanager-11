@@ -16,7 +16,9 @@ const dateFrom = (() => {
   return d;
 })();
 
-const api = new API();
+const AUTHORIZATION = `Basic zfdxghjalidko;fjeskuyjgfbeshjk`;
+
+const api = new API(AUTHORIZATION);
 
 const tasksModel = new TasksModel();
 // tasksModel.setTasks(tasks);
