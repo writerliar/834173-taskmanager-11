@@ -35,7 +35,7 @@ filtersController.render();
 const boardComponent = new BoardComponent();
 render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
 
-const boardController = new BoardController(boardComponent, tasksModel);
+const boardController = new BoardController(boardComponent, tasksModel, api);
 // boardController.render(tasks);
 
 const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom, dateTo});
