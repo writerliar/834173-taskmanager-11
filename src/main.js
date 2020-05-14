@@ -42,9 +42,9 @@ const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom
 render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 
-siteMenuComponent.setOnChange((menuItem) => {
-  const boardController = new BoardController(boardComponent, tasksModel, api);
+const boardController = new BoardController(boardComponent, tasksModel, api);
 
+siteMenuComponent.setOnChange((menuItem) => {
   switch (menuItem) {
     case MenuItem.NEW_TASK:
       siteMenuComponent.setActiveItem(MenuItem.TASKS);
@@ -71,7 +71,6 @@ api.getTasks()
   })
   .finally(() => {
     remove(loadingComponent);
-    const boardController = new BoardController(boardComponent, tasksModel, api);
 
     boardController.render();
   });
