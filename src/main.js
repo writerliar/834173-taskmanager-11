@@ -17,8 +17,9 @@ const dateFrom = (() => {
 })();
 
 const AUTHORIZATION = `Basic zfdxghjalidko;fjeskuyjgfbeshjk`;
+const END_POINT = `https://11.ecmascript.pages.academy/task-manager`;
 
-const api = new API(AUTHORIZATION);
+const api = new API(END_POINT, AUTHORIZATION);
 
 const tasksModel = new TasksModel();
 // tasksModel.setTasks(tasks);
