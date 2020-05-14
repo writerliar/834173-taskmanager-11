@@ -23,14 +23,12 @@ const API = class {
   }
 
   getTasks() {
-
     return this._load({url: `tasks`})
       .then((response) => response.json())
       .then(Task.parseTasks);
   }
 
   updateTask(id, data) {
-
     return this._load({
       url: `/tasks/${id}`,
       method: Method.PUT,
@@ -39,6 +37,24 @@ const API = class {
     })
       .then((response) => response.json())
       .then(Task.parseTask);
+  }
+
+  createTask(task) {
+    return this._load({
+      url: `/tasks`,
+      method: Method.POST,
+      body: JSON.stringify(task.toRaw()),
+      headers: new Headers({"Content-Type": `application/json`}),
+    })
+      .then((response) => response.json())
+      .then(Task.parseTask);
+  }
+
+  deleteTask(id) {
+    return this._load({
+      url: `/tasks/${id}`,
+      method: Method.DELETE,
+    });
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

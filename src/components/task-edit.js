@@ -9,6 +9,11 @@ import "flatpickr/dist/flatpickr.min.css";
 const MIN_DESCRIPTION_LENGTH = 1;
 const MAX_DESCRIPTION_LENGTH = 140;
 
+const DefaultData = {
+  deleteButtonText: `Delete`,
+  saveButtonText: `Save`,
+};
+
 const isAllowableDescriptionLength = (description) => {
   const length = description.length;
 
@@ -58,7 +63,7 @@ const createColorsMarkup = (colors, currentColor) => {
 
 const createTaskEditTemplate = (task, options = {}) => {
   const {dueDate} = task;
-  const {isDateShowing, activeRepeatingDays, isRepeatingTask, color, currentDescription} = options;
+  const {isDateShowing, activeRepeatingDays, isRepeatingTask, color, currentDescription, externalData} = options;
 
   const description = encode(currentDescription);
 
@@ -76,6 +81,9 @@ const createTaskEditTemplate = (task, options = {}) => {
 
   const repeatingDaysMarkup = createRepeatingDaysMarkup(DAYS, activeRepeatingDays);
   const colorsMarkup = createColorsMarkup(COLORS, color);
+
+  const deleteButtonText = externalData.deleteButtonText;
+  const saveButtonText = externalData.saveButtonText;
 
   return (
     `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
@@ -146,9 +154,9 @@ const createTaskEditTemplate = (task, options = {}) => {
                     type="submit"
                     ${isBlockSaveButton ? `disabled` : ``}
                     >
-                      save
+                      ${saveButtonText}
                   </button>
-                  <button class="card__delete" type="button">delete</button>
+                  <button class="card__delete" type="button">${deleteButtonText}</button>
                 </div>
               </div>
             </form>
@@ -165,6 +173,7 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
     this._currentColor = task.color;
     this._currentDescription = task.description;
+    this._externalData = DefaultData;
 
     this._flatpickr = null;
     this._submitHandler = null;
@@ -181,7 +190,13 @@ export default class TaskEdit extends AbstractSmartComponent {
       isRepeatingTask: this._isRepeatingTask,
       color: this._currentColor,
       currentDescription: this._currentDescription,
+      externalData: this._externalData,
     });
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
   }
 
   removeElement() {
