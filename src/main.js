@@ -3,10 +3,10 @@ import SiteMenuComponent, {MenuItem} from "./components/site-menu";
 import FiltersController from "./controllers/filter-controller";
 import BoardComponent from "./components/board";
 import StatisticsComponent from "./components/statistics";
+import LoadingComponent from "./components/loading";
 import BoardController from "./controllers/board-controller";
 import TasksModel from "./models/tasks";
-// import {tasks} from "./mock/task";
-import {render, RenderPosition} from "./utils/render";
+import {render, remove, RenderPosition} from "./utils/render";
 
 const dateTo = new Date();
 
@@ -22,7 +22,6 @@ const END_POINT = `https://11.ecmascript.pages.academy/task-manager`;
 const api = new API(END_POINT, AUTHORIZATION);
 
 const tasksModel = new TasksModel();
-// tasksModel.setTasks(tasks);
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
@@ -36,14 +35,16 @@ filtersController.render();
 const boardComponent = new BoardComponent();
 render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
 
-const boardController = new BoardController(boardComponent, tasksModel, api);
-// boardController.render(tasks);
+const loadingComponent = new LoadingComponent();
+render(boardComponent.getElement(), loadingComponent, RenderPosition.BEFOREEND);
 
 const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom, dateTo});
 render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 
 siteMenuComponent.setOnChange((menuItem) => {
+  const boardController = new BoardController(boardComponent, tasksModel, api);
+
   switch (menuItem) {
     case MenuItem.NEW_TASK:
       siteMenuComponent.setActiveItem(MenuItem.TASKS);
@@ -67,5 +68,10 @@ siteMenuComponent.setOnChange((menuItem) => {
 api.getTasks()
   .then((tasks) => {
     tasksModel.setTasks(tasks);
+  })
+  .finally(() => {
+    remove(loadingComponent);
+    const boardController = new BoardController(boardComponent, tasksModel, api);
+
     boardController.render();
   });
