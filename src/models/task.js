@@ -9,11 +9,27 @@ export default class Task {
     this.repeatingDays = data[`repeating_days`];
   }
 
+  toRaw() {
+    return {
+      "id": this.id,
+      "color": this.color,
+      "description": this.description,
+      "is_archived": this.isArchive,
+      "is_favorite": this.isFavorite,
+      "due_date": this.dueDate ? this.dueDate.toISOString() : null,
+      "repeating_days": this.repeatingDays,
+    };
+  }
+
   static parseTask(data) {
     return new Task(data);
   }
 
   static parseTasks(data) {
     return data.map(Task.parseTask);
+  }
+
+  static clone(data) {
+    return new Task(data.toRaw());
   }
 }
