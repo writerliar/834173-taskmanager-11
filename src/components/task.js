@@ -10,14 +10,13 @@ const createButtonMarkup = (name, isActive = true) => {
   );
 };
 
-const createTaskTemplate = (task) => {
-  const {color, description: notSanitizedDescription, dueDate, isRepeat} = task;
-
-  const isDateShowing = !!dueDate;
+const createTaskTemplate = (task, options = {}) => {
+  const {dueDate} = task;
+  const {isDateShowing, isRepeatingTask, color, currentDescription} = options;
 
   const isExpired = dueDate instanceof Date && isOverdueDate(dueDate, new Date());
 
-  const repeatClass = isRepeat ? `card--repeat` : ``;
+  const repeatClass = isRepeatingTask ? `card--repeat` : ``;
   const deadlineClass = isExpired ? `card--deadline` : ``;
 
   const date = isDateShowing ? formatDate(dueDate) : ``;
@@ -27,7 +26,7 @@ const createTaskTemplate = (task) => {
   const archiveButton = createButtonMarkup(`archive`, !task.isArchive);
   const favoriteButton = createButtonMarkup(`favorites`, !task.isFavorite);
 
-  const description = encode(notSanitizedDescription);
+  const description = encode(currentDescription);
 
   return (
     `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
@@ -71,10 +70,19 @@ export default class Task extends AbstractComponent {
   constructor(task) {
     super();
     this._task = task;
+    this._isDateShowing = !!task.dueDate;
+    this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
+    this._currentColor = task.color;
+    this._currentDescription = task.description;
   }
 
   getTemplate() {
-    return createTaskTemplate(this._task);
+    return createTaskTemplate(this._task, {
+      isDateShowing: this._isDateShowing,
+      isRepeatingTask: this._isRepeatingTask,
+      color: this._currentColor,
+      currentDescription: this._currentDescription,
+    });
   }
 
   setEditButtonClickHandler(handler) {
