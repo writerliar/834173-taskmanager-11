@@ -1,4 +1,6 @@
-import API from "./api";
+import API from "./api/index";
+import Provider from "./api/provider";
+import Store from "./api/store";
 import SiteMenuComponent, {MenuItem} from "./components/site-menu";
 import FiltersController from "./controllers/filter-controller";
 import BoardComponent from "./components/board";
@@ -18,8 +20,13 @@ const dateFrom = (() => {
 
 const AUTHORIZATION = `Basic zfdxghjalidko;fjeskuyjgfbeshjk`;
 const END_POINT = `https://11.ecmascript.pages.academy/task-manager`;
+const STORE_PREFIX = `taskmanager-localstorage`;
+const STORE_VAR = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VAR}`;
 
 const api = new API(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const tasksModel = new TasksModel();
 
@@ -42,7 +49,7 @@ const statisticsComponent = new StatisticsComponent({tasks: tasksModel, dateFrom
 render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
 statisticsComponent.hide();
 
-const boardController = new BoardController(boardComponent, tasksModel, api);
+const boardController = new BoardController(boardComponent, tasksModel, apiWithProvider);
 
 siteMenuComponent.setOnChange((menuItem) => {
   switch (menuItem) {
@@ -65,7 +72,7 @@ siteMenuComponent.setOnChange((menuItem) => {
   }
 });
 
-api.getTasks()
+apiWithProvider.getTasks()
   .then((tasks) => {
     tasksModel.setTasks(tasks);
   })
@@ -74,3 +81,17 @@ api.getTasks()
 
     boardController.render();
   });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});
