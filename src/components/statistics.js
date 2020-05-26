@@ -275,8 +275,6 @@ export default class Statistics extends AbstractSmartComponent {
 
   _resetCharts() {
     if (this._daysChart) {
-
-      console.log(this._daysChart);
       this._daysChart.destroy();
       this._daysChart = null;
     }
