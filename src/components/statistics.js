@@ -76,7 +76,7 @@ const renderColorsChart = (colorsCts, tasks) => {
         callbacks: {
           label: (tooltipItem, data) => {
             const allData = data.datasets[tooltipItem.datasetIndex].data;
-            const tooltipData = allData[tooltipItem.index];
+            const tooltipData = allData[tooltipItem.api];
             const total = allData.reduce((acc, it) => acc + parseFloat(it));
             const tooltipPercentage = Math.round((tooltipData / total) * 100);
             return `${tooltipData} TASKS ${tooltipPercentage}%`;
@@ -275,6 +275,8 @@ export default class Statistics extends AbstractSmartComponent {
 
   _resetCharts() {
     if (this._daysChart) {
+
+      console.log(this._daysChart);
       this._daysChart.destroy();
       this._daysChart = null;
     }
